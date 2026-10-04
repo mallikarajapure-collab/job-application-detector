@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Job Application Tracker</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+    <div class="container">
+
+
+        <!-- HEADER -->
+
+        <header>
+
+            <div>
+
+                <h1>
+                    Job Application Tracker
+                </h1>
+
+                <p>
+                    AI-powered job application detection
+                    and tracking system
+                </p>
+
+            </div>
+
+
+            <button
+                id="syncGmailBtn"
+                onclick="syncGmail()"
+            >
+                🔄 Sync Gmail
+            </button>
+
+        </header>
+
+
+        <!-- GMAIL SYNC MESSAGE -->
+
+        <div
+            id="syncMessage"
+            class="sync-message"
+        ></div>
+
+
+        <!-- DASHBOARD -->
+
+        <section class="dashboard">
+
+            <div class="card">
+                <h3>Total</h3>
+                <p id="totalCount">0</p>
+            </div>
+
+
+            <div class="card">
+                <h3>Applied</h3>
+                <p id="appliedCount">0</p>
+            </div>
+
+            <div class="card">
+    <h3>Under Review</h3>
+    <p id="underReviewCount">0</p>
+</div>
+
+            <div class="card">
+                <h3>Assessment</h3>
+                <p id="assessmentCount">0</p>
+            </div>
+
+
+            <div class="card">
+                <h3>Interview</h3>
+                <p id="interviewCount">0</p>
+            </div>
+
+
+            <div class="card">
+                <h3>Selected</h3>
+                <p id="selectedCount">0</p>
+            </div>
+
+
+            <div class="card">
+                <h3>Rejected</h3>
+                <p id="rejectedCount">0</p>
+            </div>
+
+        </section>
+
+
+        <!-- MANUAL DETECTION -->
+
+        <section class="panel">
+
+            <h2>
+                📩 Detect Job Application
+            </h2>
+
+
+            <textarea
+                id="emailText"
+                placeholder="Paste job application email here..."
+            ></textarea>
+
+
+            <button
+                onclick="detectApplication()"
+            >
+                🔍 Detect Application
+            </button>
+
+
+            <div
+                id="loading"
+                class="result"
+            ></div>
+
+
+            <!-- DETECTED DETAILS -->
+
+            <div class="detected-details">
+
+                <p>
+                    <strong>Company:</strong>
+                    <span id="company">-</span>
+                </p>
+
+
+                <p>
+                    <strong>Job Role:</strong>
+                    <span id="jobRole">-</span>
+                </p>
+
+
+                <p>
+                    <strong>Job ID:</strong>
+                    <span id="jobId">-</span>
+                </p>
+
+
+                <p>
+                    <strong>Status:</strong>
+                    <span id="status">-</span>
+                </p>
+
+
+                <p>
+                    <strong>Location:</strong>
+                    <span id="location">-</span>
+                </p>
+
+
+                <p>
+                    <strong>Application Date:</strong>
+                    <span id="applicationDate">-</span>
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- SEARCH / FILTER -->
+
+        <section class="panel">
+
+            <h2>
+                🔎 Search Applications
+            </h2>
+
+
+            <div class="filters">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search company or role..."
+                    oninput="applyFilters()"
+                >
+
+
+                <select
+                    id="statusFilter"
+                    onchange="applyFilters()"
+                >
+
+                    <option value="All">
+                        All Status
+                    </option>
+
+                    <option value="Applied">
+                        Applied
+                    </option>
+
+                    <option value="Under Review">
+                        Under Review
+                    </option>
+
+                    <option value="Assessment">
+                        Assessment
+                    </option>
+
+                    <option value="Interview">
+                        Interview
+                    </option>
+
+                    <option value="Selected">
+                        Selected
+                    </option>
+
+                    <option value="Rejected">
+                        Rejected
+                    </option>
+
+                </select>
+
+
+                <select
+                    id="locationFilter"
+                    onchange="applyFilters()"
+                >
+
+                    <option value="All">
+                        All Locations
+                    </option>
+
+                </select>
+
+
+                <button
+                    type="button"
+                    onclick="clearFilters()"
+                >
+                    Clear Filters
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ANALYTICS -->
+
+        <section class="analytics">
+
+
+            <div class="chart-card">
+
+                <h2>
+                    Status Analytics
+                </h2>
+
+                <canvas
+                    id="statusChart"
+                ></canvas>
+
+            </div>
+
+
+            <div class="chart-card">
+
+                <h2>
+                    Company Analytics
+                </h2>
+
+                <canvas
+                    id="companyChart"
+                ></canvas>
+
+            </div>
+
+        </section>
+
+
+        <!-- APPLICATION TABLE -->
+
+        <section class="panel">
+
+
+            <div class="table-header">
+
+                <h2>
+                    📋 Applications
+                </h2>
+
+
+                <button
+                    type="button"
+                    onclick="loadApplications()"
+                >
+                    🔄 Refresh
+                </button>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Company</th>
+
+                            <th>Role</th>
+
+                            <th>Job ID</th>
+
+                            <th>Status</th>
+
+                            <th>Location</th>
+
+                            <th>Date</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="applicationsTable">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- EDIT MODAL -->
+
+    <div
+        id="editModal"
+        class="modal"
+    >
+
+        <div class="modal-content">
+
+
+            <span
+                class="close"
+                onclick="closeEditModal()"
+            >
+                &times;
+            </span>
+
+
+            <h2>
+                Edit Application
+            </h2>
+
+
+            <input
+                type="hidden"
+                id="editId"
+            >
+
+
+            <label>
+                Company
+            </label>
+
+            <input
+                type="text"
+                id="editCompany"
+            >
+
+
+            <label>
+                Job Role
+            </label>
+
+            <input
+                type="text"
+                id="editJobRole"
+            >
+
+
+            <label>
+                Job ID
+            </label>
+
+            <input
+                type="text"
+                id="editJobId"
+            >
+
+
+            <label>
+                Status
+            </label>
+
+            <select
+                id="editStatus"
+            >
+
+                <option value="Applied">
+                    Applied
+                </option>
+
+                <option value="Under Review">
+                    Under Review
+                </option>
+
+                <option value="Assessment">
+                    Assessment
+                </option>
+
+                <option value="Interview">
+                    Interview
+                </option>
+
+                <option value="Selected">
+                    Selected
+                </option>
+
+                <option value="Rejected">
+                    Rejected
+                </option>
+
+            </select>
+
+
+            <label>
+                Location
+            </label>
+
+            <input
+                type="text"
+                id="editLocation"
+            >
+
+
+            <label>
+                Application Date
+            </label>
+
+            <input
+                type="text"
+                id="editDate"
+            >
+
+
+            <button
+                type="button"
+                onclick="saveEditedApplication(event)"
+            >
+                💾 Save Changes
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

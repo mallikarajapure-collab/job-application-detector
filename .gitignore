@@ -1,0 +1,33 @@
+credentials.json
+token.json# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+.venv/
+
+# Environment variables
+.env
+*.env
+
+# Google Gmail OAuth credentials
+credentials.json
+token.json
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary/test files
+applications_test_backup.db
+fix_encoding.py
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
