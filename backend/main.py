@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from backend.database import get_connection
-from app.services.gemini_service import analyze_job_email, GeminiQuotaError
+from backend.app.services.gemini_service import analyze_job_email, GeminiQuotaError
 from backend.app.services.gmail_service import get_recent_emails
 
 
@@ -319,34 +319,31 @@ def root():
 def detect_application(payload: EmailPayload):
 
     try:
-
-        try:
-
-    gemini_response = analyze_job_email(
-        payload.subject,
-        payload.body
-    )
-
-    result = extract_json_from_gemini(
-        gemini_response
-    )
-
-except GeminiQuotaError:
-
-    raise HTTPException(
-        status_code=503,
-        detail=(
-            "Gemini daily quota is exhausted. "
-            "Please retry after the quota resets."
+        gemini_response = analyze_job_email(
+            payload.subject,
+            payload.body
         )
-    )
 
-except Exception as error:
+        result = extract_json_from_gemini(
+            gemini_response
+        )
 
-    raise HTTPException(
-        status_code=500,
-        detail=f"AI analysis failed: {error}"
-    )
+    except GeminiQuotaError:
+
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Gemini daily quota is exhausted. "
+                "Please retry after the quota resets."
+            )
+        )
+
+    except Exception as error:
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"AI analysis failed: {error}"
+        )
 
     if not result.get("is_job_related", False):
 
@@ -388,7 +385,7 @@ except Exception as error:
 
     if existing:
 
-        existing_status = existing["status"]
+        existing_status = existing["status"] or "Applied"
 
         current_rank = STATUS_ORDER.get(
             existing_status,
@@ -476,11 +473,6 @@ except Exception as error:
             "application_date": application_date,
         }
     }
-
-
-# ============================================================
-# GMAIL SYNC
-# ============================================================
 
 @app.post("/sync-gmail")
 def sync_gmail():
