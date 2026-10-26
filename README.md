@@ -1,3 +1,11 @@
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:14532D,50:16A34A,100:A3E635&height=210&section=header&text=JOB%20APPLICATION%20DETECTOR&fontSize=40&fontColor=FFFFFF&fontAlignY=38&desc=Organize%20and%20Understand%20Applications&descAlignY=60&descSize=15" width="100%" />
+
+</div>
+
+---
+
 # Job Application Detector
 
 An AI-powered job application tracking system that automatically detects job-related emails, extracts important application details, and stores them in a centralized dashboard.
